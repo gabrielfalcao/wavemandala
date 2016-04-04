@@ -9,17 +9,22 @@ class MailInboxPanel extends React.Component {
     constructor() {
         super();
         this.state = {
-	    messages: []
+	    messages: [],
+            done: false
         };
         this.onRetrieveMessages = this.onRetrieveMessages.bind(this);
     }
     onRetrieveMessages(messages) {
         if (messages && messages.length > 0) {
             this.setState({
-                "messages": messages
+                "messages": messages,
+                "done": true,
             });
         } else {
-            window.location.reload();
+            this.setState({
+                "messages": [],
+                "done": true,
+            })
         }
     }
     componentDidMount() {
@@ -30,9 +35,10 @@ class MailInboxPanel extends React.Component {
         this.unsubscribe();
     }
     render() {
+        var self = this;
         return (
-            this.state.messages.length > 0 ? <div className="col-md-12">
-                <h3>attackers available: {this.state.messages.length}</h3>
+            this.state.done ? (<div className="col-md-12">
+                <h3>incoming messages: {this.state.messages.length}</h3>
                 <table className="table table-striped">
                     <thead>
                         <tr>
@@ -53,7 +59,7 @@ class MailInboxPanel extends React.Component {
                          })}
                     </tbody>
                 </table>
-            </div> : <LoadingView>loading messages</LoadingView>
+            </div>) : <LoadingView>loading messages</LoadingView>
         )
     }
 }

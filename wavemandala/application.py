@@ -7,7 +7,9 @@ import os
 import sys
 import json
 import logging
+import traceback
 import redis
+import functools
 import email.message
 from plant import Node
 from flask import Flask, Response, render_template
@@ -15,14 +17,31 @@ from wavemandala.mailing import InBox, EmailMessage
 
 app_node = Node(__file__)
 
-server = Flask(
-    __name__,
-    static_folder=app_node.dir.join('static/dist'),
-    template_folder=app_node.dir.join('templates'),
-)
-server.config.update(
-    MAIL_PATH_TEMPLATE='/var/mail/{0}'
-)
+
+class Application(Flask):
+    def __init__(self):
+        super(Application, self).__init__(
+            __name__,
+            static_folder=app_node.dir.join('static/dist'),
+            template_folder=app_node.dir.join('templates')
+        )
+        self.config.update(
+            MAIL_PATH_TEMPLATE='/var/mail/{0}',
+            SECRET_KEY=os.environ.get('SECRET_KEY'),
+        )
+        self.secret_key = os.environ.get('SECRET_KEY')
+
+    def handle_exception(self, e):
+        tb = traceback.format_exc(e)
+        logging.error(tb)
+        return json_response({'error': 'bad-request'}, code=400)
+
+    def get_mail_path(self, name):
+        path = self.config['MAIL_PATH_TEMPLATE'].format(name)
+        return path
+
+
+server = Application()
 
 server.secret_key = os.environ.get('SECRET_KEY')
 
@@ -109,20 +128,30 @@ def routes():
     return json_response({b'routes': get_routes()})
 
 
+def authenticated(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kw):
+        return func(*args, **kw)
+
+    return wrapper
+
+
 @server.route("/")
+@authenticated
 def index():
     "renders the UI html"
     return render_template('index.html')
 
 
 @server.route("/api/mail/inbox/<name>")
+@authenticated
 def inbox(name):
     name = sanitize_mailbox_name(name)
     if not name:
         logging.warning('invalid mailbox name')
         return json_response({'error': 'invalid request'}, code=400)
 
-    mail_path = get_mail_path(name)
+    mail_path = server.get_mail_path(name)
     if not os.path.exists(mail_path):
         logging.warning('{0} does not exist'.format(mail_path))
         return json_response({'error': 'invalid request'}, code=400)

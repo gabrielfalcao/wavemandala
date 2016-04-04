@@ -1,5 +1,6 @@
 import React from 'react'
 
+import history from '../core.jsx'
 import HeaderView from './HeaderView.jsx'
 import MailInboxPanel from './MailInboxPanel.jsx'
 import LoadingView from './LoadingView.jsx'
@@ -16,20 +17,24 @@ class MailMessageView extends React.Component {
     constructor() {
         super();
         this.state = {
+            "done": false,
+            "message": null
         };
         this.onRetrieveMessages = this.onRetrieveMessages.bind(this);
     }
     onRetrieveMessages(messages) {
         var self = this;
         var message_id = this.props.params.id;
+
         if (messages && messages.length > 0) {
             _.each(messages, function(message) {
                 if (message.id === message_id) {
-                    self.setState({"message": message});
+                    self.setState({"message": message, "done": true});
                 }
             });
         } else {
-            window.location.reload();
+            history.push('/');
+            return;
         }
     }
     componentDidMount() {
@@ -63,7 +68,7 @@ class MailMessageView extends React.Component {
 
                      </Col>) : null
                  })}
-                 </div> : <LoadingView>loading {self.props.params.id}...</LoadingView>}
+                </div> : <LoadingView>loading {self.props.params.id}...</LoadingView>}
             </div>
         )
     }

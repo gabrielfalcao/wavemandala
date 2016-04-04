@@ -1,4 +1,4 @@
-all:
+all: deploy-everything
 
 prepare-environment: deps
 
@@ -21,7 +21,7 @@ deploy-frontend: static
 static: js-deps
 	cd wavemandala/static && webpack --progress --colors
 
-watch: js-deps
+watch:
 	cd wavemandala/static && webpack --progress --colors --watch
 
 run:

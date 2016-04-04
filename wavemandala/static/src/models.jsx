@@ -18,7 +18,7 @@ const MessageListStore = Reflux.createStore({
             if (data.inbox && data.inbox.length > 0) {
                 store.trigger(data.inbox);
             } else {
-                console.log("Failed " + response);
+                store.trigger([]);
             }
         });
     }
