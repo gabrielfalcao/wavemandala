@@ -1,4 +1,4 @@
-all: deploy
+all:
 
 prepare-environment: deps
 
@@ -9,8 +9,14 @@ js-deps:
 
 deps: python-deps js-deps
 
-deploy: static
+deploy-everything:
 	ansible-playbook --vault-password-file=$(HOME)/.ansible-vault.wavemandala -i provisioning/inventory provisioning/site.yml
+
+deploy-backend:
+	ansible-playbook --vault-password-file=$(HOME)/.ansible-vault.wavemandala -i provisioning/inventory provisioning/site.yml -t backend
+
+deploy-frontend: static
+	ansible-playbook --vault-password-file=$(HOME)/.ansible-vault.wavemandala -i provisioning/inventory provisioning/site.yml -t static
 
 static: js-deps
 	cd wavemandala/static && webpack --progress --colors

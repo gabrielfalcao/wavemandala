@@ -50,10 +50,18 @@ class MailMessageView extends React.Component {
                  <h4>to: {message.to}</h4>
                  <h4>from: {message.from}</h4>
                  {message.messages.map(function(msg) {
-                     return <Col md={12} key={msg.id}>
+                     return msg.id ? ( <Col md={12} key={msg.id}>
                      <h4>content-type: {JSON.stringify(msg.content_type)}</h4>
-                     <pre>{msg.body}</pre>
-                     </Col>
+                         <pre>{msg.body}</pre>
+
+                     {msg.parts.map(function(part) {
+                         return part.id ? ( <Col md={12} key={part.id}>
+                         <h4>content-type: {JSON.stringify(part.content_type)}</h4>
+                         <pre>{part.body}</pre>
+                         </Col>) : null
+                     })}
+
+                     </Col>) : null
                  })}
                  </div> : <LoadingView>loading {self.props.params.id}...</LoadingView>}
             </div>

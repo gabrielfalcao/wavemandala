@@ -5,6 +5,14 @@ import json
 import hashlib
 import mailbox
 import base64
+import email.message
+
+
+def json_default(obj):
+    try:
+        return list(obj)
+    except:
+        return repr(obj)
 
 
 def content_type_is_binary(content_type):
@@ -16,7 +24,7 @@ def content_type_is_binary(content_type):
 
 
 def checksum(item):
-    return hashlib.sha1(item).hexdigest()
+    return hashlib.sha1(item.encode('utf-8')).hexdigest()
 
 
 class InBox(object):
@@ -48,16 +56,24 @@ class EmailMessage(object):
         ((content_type, _), (_, charset)) = all_params
         body = message.get_payload(decode=True)
 
-        if not body:
-            return
+        if isinstance(body, email.message.Message):
+            return self.extract_message(body)
+
+        if message.is_multipart():
+            parts = [self.extract_message(m) for m in message.get_payload()]
+        else:
+            parts = []
 
         if 'text' in content_type:
             body = body.decode(charset)
+
         elif content_type_is_binary(content_type):
             body = base64.b64encode('base64')
 
         return {
+            'is_multipart': self.msg.is_multipart(),
             'content_type': content_type,
+            'parts': parts,
             'encoding': charset,
             'body': body,
             'id': checksum(message.as_string())
@@ -68,11 +84,11 @@ class EmailMessage(object):
 
         data = self.extract_relevant_metadata(metadata)
         data[b'original'] = self.msg.as_string()
-        data[b'messages'] = [self.extract_message(m) for m in self.msg.get_payload()]
+        data[b'messages'] = [self.extract_message(msg) for msg in self.msg.get_payload()]
         return data
 
     def to_json(self, indent=2):
-        return json.dumps(self.to_dict(), indent=indent)
+        return json.dumps(self.to_dict(), indent=indent, default=json_default)
 
 
 def main():

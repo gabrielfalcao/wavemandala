@@ -3,7 +3,9 @@
   template: src=nginx.conf dest=/etc/nginx/nginx.conf
             owner=root group=root mode=644
   notify: restart nginx
-  tags: nginx
+  tags:
+    - nginx
+    - static
 
 - name: ensuring default nginx site is not there
   file: path=/etc/nginx/sites-enabled/default state=absent
@@ -18,4 +20,6 @@
 - name: enable nginx site config file
   file: src=/etc/nginx/sites-available/wavemandala.conf dest=/etc/nginx/sites-enabled/wavemandala.conf owner=www-data group=www-data state=link
   notify: restart nginx
-  tags: nginx
+  tags:
+    - nginx
+    - static

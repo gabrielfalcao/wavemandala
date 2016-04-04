@@ -7,3 +7,5 @@
     dest="/etc/init/python-app.conf"
     owner=root group=root mode=644
   notify: restart python-app
+  tags:
+    - backend
