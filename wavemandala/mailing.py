@@ -1,8 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 import json
 import hashlib
 import mailbox
+import base64
+
+
+def content_type_is_binary(content_type):
+    return (
+        'image' in content_type or
+        'video' in content_type or
+        'octet-stream' in content_type
+    )
 
 
 def checksum(item):
@@ -24,18 +34,28 @@ class EmailMessage(object):
 
     def extract_relevant_metadata(self, metadata):
         data = {}
-        data['id'] = checksum(self.msg.as_string())
-        data['to'] = metadata.pop('To')
-        data['from'] = metadata.pop('Return-Path')
-        data['received'] = metadata.pop('Received')
-        data['subject'] = metadata.pop('Subject')
-        data['content-type'] = metadata.pop('Content-Type')
-        data['meta'] = metadata
+        data[b'id'] = checksum(self.msg.as_string())
+        data[b'to'] = metadata.pop('To')
+        data[b'from'] = metadata.pop('Return-Path')
+        data[b'received'] = metadata.pop('Received')
+        data[b'subject'] = metadata.pop('Subject')
+        data[b'content-type'] = metadata.pop('Content-Type')
+        data[b'meta'] = metadata
         return data
 
     def extract_message(self, message):
-        ((content_type, _), (_, charset)) = message.get_params()
+        all_params = message.get_params()
+        ((content_type, _), (_, charset)) = all_params
         body = message.get_payload(decode=True)
+
+        if not body:
+            return
+
+        if 'text' in content_type:
+            body = body.decode(charset)
+        elif content_type_is_binary(content_type):
+            body = base64.b64encode('base64')
+
         return {
             'content_type': content_type,
             'encoding': charset,
@@ -47,8 +67,8 @@ class EmailMessage(object):
         metadata = dict(self.msg.items())
 
         data = self.extract_relevant_metadata(metadata)
-        data['original'] = self.msg.as_string()
-        data['messages'] = [self.extract_message(m) for m in self.msg.get_payload()]
+        data[b'original'] = self.msg.as_string()
+        data[b'messages'] = [self.extract_message(m) for m in self.msg.get_payload()]
         return data
 
     def to_json(self, indent=2):

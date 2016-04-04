@@ -69,7 +69,7 @@ def json_handle_weird(obj):
         return EmailMessage(obj).to_dict()
 
     logging.warning("failed to serialize %s", obj)
-    return repr(obj)
+    return bytes(obj)
 
 
 def json_response(data, code=200, headers={}):
