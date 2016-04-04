@@ -1,0 +1,28 @@
+- name: "installing python dependencies"
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  with_items:
+    - python-pip
+    - python-dev
+    - python-virtualenv
+
+- name: copy backend app
+  synchronize: src="{{ local_repository_root_path }}" dest="/srv/src" recursive=yes
+  notify: restart python-app
+
+
+- name: fix permissions
+  shell: "chown -R www-data: /srv/src"
+
+# Python dependencies
+
+- name: install latest setuptools
+  pip: name=setuptools state=latest
+       virtualenv="{{ venv_path }}"
+
+- name: install latest pip
+  pip: name=pip state=latest
+       virtualenv="{{ venv_path }}"
+
+- name: install requirements
+  pip: requirements="/srv/src/requirements.txt"
+       virtualenv="{{ venv_path }}"

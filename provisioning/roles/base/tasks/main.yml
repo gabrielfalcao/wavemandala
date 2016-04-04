@@ -1,0 +1,28 @@
+- name: "[webrtc stack] installing dependencies"
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  with_items:
+    - ntp
+    - nginx
+    - telnet
+    - nodejs
+    - git
+    - vim
+    - curl
+    - git-svn
+    - ca-certificates
+    - build-essential
+    - python
+    - htop
+    - subversion
+    - wget
+    - pkg-config
+    - libev-dev
+    - redis-server
+    - redis-tools
+    - mysql-client
+    - mysql-server
+    - postfix
+    - postfix-mysql
+
+- name: "[webrtc stack] starting ntpd"
+  service: name=ntp state=started enabled=yes

@@ -1,0 +1,2 @@
+venv_path: /srv/venv
+frontend_static_path: /srv/src/wavemandala/static

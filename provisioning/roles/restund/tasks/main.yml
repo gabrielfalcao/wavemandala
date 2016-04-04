@@ -1,0 +1,30 @@
+- name: "[restund] ensuring lib re 0.4.7"
+  file: path="/srv/sources" state=directory
+
+- name: "[restund] extracting lib re 0.4.7"
+  unarchive: src=re-0.4.7.tar.gz dest=/srv/sources
+
+- name: "[restund] extracting restund"
+  unarchive: src=restund-0.4.2.tar.gz dest=/srv/sources
+
+- name: "[restund] install lib re"
+  shell: make install PREFIX=/usr
+  args:
+    chdir: /srv/sources/re-0.4.7
+
+- name: "[restund] install restund"
+  shell: make install PREFIX=/usr
+  args:
+    chdir: /srv/sources/restund-0.4.2
+
+- name: "[restund] install init.d script"
+  template: src=restund.init dest=/etc/init.d/restund mode=755
+
+- name: "[restund] setup /etc/restund.conf"
+  template: src=restund.conf dest=/etc/restund.conf mode=644
+
+- name: "[restund] make init.d script executable"
+  file: path=/etc/init.d/restund state=touch mode="u=rwx,g=rx,o=rx"
+
+- name: "[restund] starting restund server"
+  service: name=restund state=restarted enabled=yes
