@@ -20,6 +20,7 @@
     - redis-server
     - redis-tools
     - mysql-client
+    - python-mysqldb
     - mysql-server
     - postfix
     - postfix-mysql
