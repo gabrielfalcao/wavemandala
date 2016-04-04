@@ -10,11 +10,11 @@
     restund_public_ip_address: 45.55.126.214
     wavemandala_mysql_user: xmpp
     wavemandala_mysql_db: prosody
-    wavemandala_mysql_password: l3m0np4rty
     root_domain: wavemanda.la
     local_repository_root_path: "{{ playbook_dir }}/.."
   vars_files:
     - "wavemandala-vault.yml"
+
   roles:
     - base
     - ssl
