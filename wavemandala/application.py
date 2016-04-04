@@ -8,9 +8,10 @@ import sys
 import json
 import logging
 import redis
+import email.message
 from plant import Node
 from flask import Flask, Response, render_template
-from wavemandala.mailing import InBox
+from wavemandala.mailing import InBox, EmailMessage
 
 app_node = Node(__file__)
 
@@ -63,10 +64,18 @@ def get_routes():
     return routes
 
 
+def json_handle_weird(obj):
+    if isinstance(obj, email.message.Message):
+        return EmailMessage(obj).to_dict()
+
+    logging.warning("failed to serialize %s", obj)
+    return repr(obj)
+
+
 def json_response(data, code=200, headers={}):
     headers = headers.copy()
     headers['Content-Type'] = 'application/json'
-    payload = json.dumps(data, indent=2)
+    payload = json.dumps(data, indent=2, default=json_handle_weird)
     return Response(payload, status=code, headers=headers)
 
 

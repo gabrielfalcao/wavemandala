@@ -34,10 +34,11 @@ class EmailMessage(object):
         return data
 
     def extract_message(self, message):
-        content_type = message.get_params()
-        body = message.get_payload()
+        ((content_type, _), (_, charset)) = message.get_params()
+        body = message.get_payload(decode=True)
         return {
             'content_type': content_type,
+            'encoding': charset,
             'body': body,
             'id': checksum(message.as_string())
         }
