@@ -1,17 +1,11 @@
-import io from "socket.io-client"
+import "strophe.js"
 
 var SOCKETS = {};
 
-function get_socket(name) {
-    var socket = io.connect("http://" + document.domain + ":" + location.port, {"forceNew": true});
-    socket.on("connect", function(){
-        console.log("turning on " + name + " subscriber");
-    });
-    socket.on("disconnect", function(){
-        window.location.reload();
-    });
-    SOCKETS[name] = socket;
-    return socket
+function get_connection(name) {
+    ;
+    var connection = new Strophe.Connection('https://wavemanda.la/http-bind');
+    return connection;
 }
 
-export default get_socket
+export default get_connection

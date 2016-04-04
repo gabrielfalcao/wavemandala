@@ -23,29 +23,45 @@ modules_enabled = {
    "posix";
    "bosh";
    --"console"; -- telnet to port 5582 (needs console_enabled = true)
-   --"httpserver"; -- Serve static files from a directory over HTTP
+   "httpserver"; -- Serve static files from a directory over HTTP
 };
 
 authentication = "internal_hashed"
 allow_registration = true;
+consider_bosh_secure = true;
 cross_domain_bosh = true;
 
 daemonize = true;
 pidfile = "/var/run/prosody/prosody.pid";
 
+bosh_ports = {
+   {
+      port = 5280;
+      path = "http-bind";
+   },
+   {
+      port = 5281;
+      path = "http-bind";
+      ssl = {
+         key = "{{ root_domain_tls_key_path }}";
+         certificate = "{{ root_domain_tls_cert_path }}";
+      }
+   }
+}
+
 https_ssl = {
-       key = "{{ root_domain_tls_key_path }}";
-       certificate = "{{ root_domain_tls_cert_path }}";
+   key = "{{ root_domain_tls_key_path }}";
+   certificate = "{{ root_domain_tls_cert_path }}";
 }
 
 VirtualHost "{{ root_domain }}"
-    -- Assign this host a certificate for TLS, otherwise it would use the one
-    -- set in the global section (if any).
-    -- Note that old-style SSL on port 5223 only supports one certificate, and will always
-    -- use the global one.
-    ssl = {
-       key = "{{ root_domain_tls_key_path }}";
-       certificate = "{{ root_domain_tls_cert_path }}";
-    }
+-- Assign this host a certificate for TLS, otherwise it would use the one
+-- set in the global section (if any).
+-- Note that old-style SSL on port 5223 only supports one certificate, and will always
+-- use the global one.
+ssl = {
+   key = "{{ root_domain_tls_key_path }}";
+   certificate = "{{ root_domain_tls_cert_path }}";
+}
 
 Component "conference.{{ root_domain }}" "muc"

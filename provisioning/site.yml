@@ -7,7 +7,7 @@
   vars:
     prosody_tls_key_path: /etc/prosody/certs/wavemanda.la.key
     prosody_tls_cert_path: /etc/prosody/certs/wavemanda.la.cert
-    restund_public_ip_address: 45.55.126.214
+    restund_public_ip_address: 159.203.78.204
     wavemandala_mysql_user: xmpp
     wavemandala_mysql_db: prosody
     root_domain: wavemanda.la
@@ -21,3 +21,4 @@
     - web
     - postfix
     - prosody
+    - restund
