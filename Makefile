@@ -15,6 +15,8 @@ deploy: static
 static: js-deps
 	cd wavemandala/static && webpack --progress --colors
 
+watch: js-deps
+	cd wavemandala/static && webpack --progress --colors --watch
 
 edit-vault:
 	ansible-vault --vault-password-file=~/.ansible-vault.wavemandala edit provisioning/wavemandala-vault.yml

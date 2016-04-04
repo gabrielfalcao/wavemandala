@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import json
+import hashlib
 import mailbox
+
+
+def checksum(item):
+    return hashlib.sha1(item).hexdigest()
 
 
 class InBox(object):
@@ -19,22 +24,22 @@ class EmailMessage(object):
 
     def extract_relevant_metadata(self, metadata):
         data = {}
-        data['id'] = metadata.pop('Message-ID')
+        data['id'] = checksum(self.msg.as_string())
         data['to'] = metadata.pop('To')
-        data['from'] = metadata.pop('From')
+        data['from'] = metadata.pop('Return-Path')
         data['received'] = metadata.pop('Received')
-        data['return-path'] = metadata.pop('Return-Path')
         data['subject'] = metadata.pop('Subject')
         data['content-type'] = metadata.pop('Content-Type')
         data['meta'] = metadata
         return data
 
     def extract_message(self, message):
-        content_type = dict(message.get_params())
+        content_type = message.get_params()
         body = message.get_payload()
         return {
             'content_type': content_type,
             'body': body,
+            'id': checksum(message.as_string())
         }
 
     def to_dict(self):
@@ -50,7 +55,7 @@ class EmailMessage(object):
 
 
 def main():
-    inbox = InBox('mail')
+    inbox = InBox('inbox/webmaster')
     for message in inbox.get_all_emails():
         print message.to_json()
 

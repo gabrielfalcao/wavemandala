@@ -19,6 +19,9 @@ server = Flask(
     static_folder=app_node.dir.join('static/dist'),
     template_folder=app_node.dir.join('templates'),
 )
+server.config.update(
+    MAIL_PATH_TEMPLATE='/var/mail/{0}'
+)
 
 server.secret_key = os.environ.get('SECRET_KEY')
 
@@ -103,14 +106,14 @@ def index():
     return render_template('index.html')
 
 
-@server.route("/inbox/<name>")
+@server.route("/api/mail/inbox/<name>")
 def inbox(name):
     name = sanitize_mailbox_name(name)
     if not name:
         logging.warning('invalid mailbox name')
         return json_response({'error': 'invalid request'}, code=400)
 
-    mail_path = '/var/mail/{0}'.format(name)
+    mail_path = get_mail_path(name)
     if not os.path.exists(mail_path):
         logging.warning('{0} does not exist'.format(mail_path))
         return json_response({'error': 'invalid request'}, code=400)
@@ -121,5 +124,13 @@ def inbox(name):
     return json_response({'inbox': emails, 'user': name})
 
 
+def get_mail_path(name):
+    path = server.config['MAIL_PATH_TEMPLATE'].format(name)
+    return path
+
+
 if __name__ == '__main__':
+    server.config.update(
+        MAIL_PATH_TEMPLATE=app_node.dir.parent.join('inbox/{0}')
+    )
     server.run(debug=True)

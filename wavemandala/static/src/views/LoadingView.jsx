@@ -14,10 +14,10 @@ class LoadingView extends React.Component {
         return (
             <div className="col-md-12">
                 <center>
-                    <h1 style={headerStyle}>
+                    <h4 style={headerStyle}>
                         <img src={LoaderIMG} />
                         {this.props.children}
-                    </h1>
+                    </h4>
                 </center>
             </div>
         )

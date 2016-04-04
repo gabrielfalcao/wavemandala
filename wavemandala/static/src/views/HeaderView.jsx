@@ -15,8 +15,8 @@ class HeaderView extends React.Component {
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav>
-                        <NavItem href="/#/strategies">Tracks</NavItem>
-                        <NavItem href="/#/strategies">API</NavItem>
+                        <NavItem href="/#/webmail">Webmail</NavItem>
+                        <NavItem href="/#/api">API</NavItem>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
