@@ -18,5 +18,8 @@ static: js-deps
 watch: js-deps
 	cd wavemandala/static && webpack --progress --colors --watch
 
+run:
+	PYTHONPATH=$(PYTHONPATH):$(shell pwd) python wavemandala/application.py
+
 edit-vault:
 	ansible-vault --vault-password-file=~/.ansible-vault.wavemandala edit provisioning/wavemandala-vault.yml

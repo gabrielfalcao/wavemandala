@@ -36,3 +36,14 @@ ansible-playbook --vault-password-file=$(HOME)/.ansible-vault.wavemandala -i pro
 * Python app under `./wavemandala`
 * Routes:
  * `https://wavemanda.la/login`
+
+
+## SSL:
+
+```
+wavemanda.la
+mail.wavemanda.la
+files.wavemanda.la
+api.wavamanda.la
+io.wavemanda.la
+```
