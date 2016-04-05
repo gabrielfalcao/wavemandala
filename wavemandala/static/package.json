@@ -53,6 +53,7 @@
     "reflux": "^0.3.0",
     "socket.io-client": "0.9.16",
     "strophe.js": "^1.2.5",
+    "strophejs-plugins": "0.0.6",
     "underscore": "^1.8.3",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.9"

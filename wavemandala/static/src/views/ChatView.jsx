@@ -14,6 +14,7 @@ class ChatView extends React.Component {
         this.printLog = this.printLog.bind(this);
         this.onConnect = this.onConnect.bind(this);
         this.onReceiveMessage = this.onReceiveMessage.bind(this);
+        this.onReceiveRoster = this.onReceiveRoster.bind(this);
         this.connection = get_connection();
         this.connection.rawInput = function(data){
             //console.log("INPUT", data)
@@ -47,8 +48,12 @@ class ChatView extends React.Component {
                 connectionStatus: "connected"
             });
             this.connection.addHandler(this.onReceiveMessage, null, 'message', null, null,  null);
+            this.connection.addHandler(this.onReceiveRoster, null, 'roster', null, null,  null);
 	    this.connection.send($pres().tree());
         }
+    }
+    onReceiveRoster(msg) {
+        console.log("ROSTER", msg);
     }
     onReceiveMessage(msg) {
         var to = msg.getAttribute('to');
@@ -56,17 +61,20 @@ class ChatView extends React.Component {
         var type = msg.getAttribute('type');
         var elems = msg.getElementsByTagName('body');
 
-        console.log(msg.firstChild)
+        if (type == "chat" && elems.length > 0) {
+	    var body = elems[0];
 
-            if (type == "chat" && elems.length > 0) {
-	        var body = elems[0];
-
-	        this.printLog('ECHOBOT: I got a message from ' + from + ': ' + Strophe.getText(body));
-	        var reply = $msg({to: from, from: to, type: 'chat'}).cnode(Strophe.copyElement(body));
-	        this.connection.send(reply.tree());
-
-	        this.printLog('ECHOBOT: I sent ' + from + ': ' + Strophe.getText(body));
-            }
+	    this.printLog([
+                ['FROM: ' + from],
+                ['TYPE: ' + type],
+                ['TO: ' + to],
+                ['MESSAGE: ' + Strophe.getText(body)],
+            ].join('\n'));
+	    //var reply = $msg({to: from, from: to, type: 'chat'}).cnode(Strophe.copyElement(body));
+	    //this.connection.send(reply.tree());
+	    //this.printLog('ECHOBOT: I sent ' + from + ': ' + Strophe.getText(body));
+        }
+	this.connection.send($pres().tree());
 
         // we must return true to keep the handler alive.
         // returning false would remove it after it finishes.
@@ -91,14 +99,14 @@ class ChatView extends React.Component {
         return (
             <div className="container">
                 <Col md={12}>
-                    <h3>
-                        <strong>ECHOBOT: <code>{jid}</code><span>({this.state.connectionStatus})</span></strong>
-                    </h3>
-                    <p>
-                        Add the user test@wavemanda.la in your XMPP roster and send messages
-                    </p>
+                <h3>
+                    <strong>ECHOBOT: <code>{jid}</code><span>({this.state.connectionStatus})</span></strong>
+                </h3>
+                <p>
+                    Add the user test@wavemanda.la in your XMPP roster and send messages
+                </p>
 
-                    <pre id="local-logs"></pre>
+                <pre id="local-logs"></pre>
                 </Col>
             </div>
         )

@@ -14,7 +14,7 @@ class IndexView extends React.Component {
                 <HeaderView />
                 <div className="container">
                     <h1>Danger! Experimentation Zone</h1>
-                    <h3>Try the navbar!</h3>
+                    <h2>Try the navbar!</h2>
                 </div>
             </div>
         )
