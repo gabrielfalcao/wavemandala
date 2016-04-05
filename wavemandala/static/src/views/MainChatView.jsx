@@ -2,6 +2,7 @@ import React from 'react'
 
 import HeaderView from './HeaderView.jsx'
 import ChatView from './ChatView.jsx'
+import { Col } from 'react-bootstrap';
 import get_connection from '../networking.jsx'
 
 class MainChatView extends React.Component {

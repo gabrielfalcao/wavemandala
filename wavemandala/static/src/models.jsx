@@ -2,7 +2,8 @@ import Reflux from 'reflux'
 var $ = require('jquery');
 
 const Actions = Reflux.createActions([
-    "listMessages"
+    "listMessages",
+    "createUser",
 ]);
 
 
@@ -24,4 +25,28 @@ const MessageListStore = Reflux.createStore({
     }
 });
 
-export default {Actions, MessageListStore}
+
+const UserStore = Reflux.createStore({
+    init: function() {
+        this.listenTo(Actions.createUser, this.createUser);
+    },
+    createUser: function(jid, password) {
+        var store = this;
+
+        $.ajax({
+            url: '/api/user',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                jid: jid,
+                password: password
+            }),
+            success: function(data){
+                store.trigger(data);
+                console.log(arguments);
+            }
+        });
+    }
+});
+
+export default {Actions, UserStore, MessageListStore}

@@ -17,6 +17,7 @@ class HeaderView extends React.Component {
                     <Nav>
                         <NavItem href="/#/chat">Chat</NavItem>
                         <NavItem href="/#/webmail">Webmail</NavItem>
+                        <NavItem href="/#/user/create">Create User</NavItem>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
