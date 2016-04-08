@@ -23,14 +23,19 @@ modules_enabled = {
    "posix";
    "bosh";
    --"console"; -- telnet to port 5582 (needs console_enabled = true)
-   "httpserver"; -- Serve static files from a directory over HTTP
+   --"httpserver"; -- Serve static files from a directory over HTTP
 };
-
+log = {
+        debug = "/var/log/prosody/prosody.log";
+        error = "/var/log/prosody/prosody.err";
+}
 authentication = "internal_hashed"
 allow_registration = true;
 consider_bosh_secure = true;
 cross_domain_bosh = true;
-
+bosh_max_inactivity = 300; -- 5 minutes
+bosh_max_requests = 20;
+bosh_default_hold = 5;
 daemonize = true;
 pidfile = "/var/run/prosody/prosody.pid";
 

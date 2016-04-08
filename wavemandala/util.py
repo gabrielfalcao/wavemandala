@@ -1,8 +1,33 @@
 # -*- coding: utf-8 -*-
-
+import re
 import time
+import redis
 import logging
 from subprocess import Popen, PIPE, STDOUT
+
+
+def extract_jid(string):
+    # make it lowercase
+    jid = string.lower()
+    # remove anything after blank spaces
+    jid = re.sub(r'\s+.*', '', jid)
+    # replace any non-alphanumeric chars with underscore
+    jid = re.sub(r'\W+.*', '_', jid)
+    return jid
+
+
+def slugify(string):
+    return re.sub(r'\W+', '_', string.strip()).lower()
+
+
+def get_redis_connection():
+    return redis.StrictRedis()
+
+
+def sanitize_mailbox_name(name):
+    found = re.match(r'^[_\w]+$', name)
+    if found:
+        return found.group(0)
 
 
 def force_unicode(string):

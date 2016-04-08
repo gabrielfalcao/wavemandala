@@ -1,3 +1,4 @@
+import "webrtc-adapter"
 import "strophe.js"
 import "strophejs-plugins/roster/strophe.roster.js"
 import "strophejs-plugins/muc/strophe.muc.js"

@@ -52,6 +52,12 @@ class EmailMessage(object):
         return data
 
     def extract_message(self, message):
+        if isinstance(message, basestring):
+            return {
+                'id': checksum(message),
+                'body': message
+            }
+
         all_params = message.get_params()
         ((content_type, _), (_, charset)) = all_params
         body = message.get_payload(decode=True)

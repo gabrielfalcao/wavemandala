@@ -8,10 +8,14 @@ import logging
 import traceback
 import email.message
 
+from datetime import timedelta
 from flask import Flask, Response, request
-
+from flask.ext.session import Session
+from flask_googlelogin import GoogleLogin
 from wavemandala.mailing import EmailMessage
-from wavemandala.util import ShellCommand
+# from wavemandala.util import ShellCommand
+from wavemandala.util import get_redis_connection
+from wavemandala.models import User
 
 
 class Application(Flask):
@@ -21,13 +25,25 @@ class Application(Flask):
             static_folder=app_node.dir.join('static/dist'),
             template_folder=app_node.dir.join('templates')
         )
+        self.redis = get_redis_connection()
         self.config.update(
             MAIL_PATH_TEMPLATE='/var/mail/{0}',
-            SECRET_KEY=os.environ.get('SECRET_KEY'),
+            SECRET_KEY=os.environ.get('SECRET_KEY') or 'local',
+            SESSION_TYPE='redis',
+            SESSION_COOKIE_SECURE=True,
+            PERMANENT_SESSION_LIFETIME=timedelta(hours=6),
+            SESSION_KEY_PREFIX='wavemandala:session:',
+            SESSION_REDIS=self.redis,
+            GOOGLE_LOGIN_CLIENT_SCOPES='https://www.googleapis.com/auth/userinfo.email',
+            GOOGLE_LOGIN_REDIRECT_URI=os.environ.get('GOOGLE_LOGIN_REDIRECT_URI'),
+            GOOGLE_LOGIN_CLIENT_ID=os.environ.get('GOOGLE_LOGIN_CLIENT_ID'),
+            GOOGLE_LOGIN_CLIENT_SECRET=os.environ.get('GOOGLE_LOGIN_CLIENT_SECRET'),
             REGISTER_USER_CMD_TEMPLATE='prosodyctl register {jid} wavemanda.la {password}',
         )
         self.app_node = app_node
+        self.sesh = Session(self)
         self.secret_key = os.environ.get('SECRET_KEY')
+        self.google = GoogleLogin(self)
 
     def json_handle_weird(self, obj):
         if isinstance(obj, email.message.Message):
@@ -54,19 +70,16 @@ class Application(Flask):
 
         return data
 
-    def register_user(self, jid, password):
-        cmd_template = self.config['REGISTER_USER_CMD_TEMPLATE']
-        jid = jid.split("@")[0]
-        command = cmd_template.format(jid=jid, password=password)
-        manager = ShellCommand(command)
-        process = manager.run(self.app_node.dir.parent.path)
-        output, code = manager.stream_output(process)
-        return output, code
+    def register_user(self, data, token):
+        """
+        :returns: a :py:class:`~wavemandala.models.User`
+        """
+        return User(data, token).save(self.redis)
 
     def handle_exception(self, e):
         tb = traceback.format_exc(e)
         logging.error(tb)
-        return self.json_response({'error': 'bad-request'}, code=400)
+        return self.json_response({'error': 'bad-request', 'traceback': tb}, code=400)
 
     def get_mail_path(self, name):
         path = self.config['MAIL_PATH_TEMPLATE'].format(name)

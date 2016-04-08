@@ -12,7 +12,7 @@
   tags: nginx
 
 - name: install nginx site config file
-  template: src=nginx-site.conf dest=/etc/nginx/sites-available/wavemandala.conf
+  template: src=app.conf dest=/etc/nginx/sites-available/wavemandala.conf
             owner=root group=root mode=644
   notify: restart nginx
   tags: nginx
