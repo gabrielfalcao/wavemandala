@@ -60,8 +60,8 @@ class TrackView extends React.Component {
                               playing={this.state.playing}
                               onReady={this.handleReady}
                 />
-                <button onClick={this.handleTogglePlay} className="btn btn-primary">
-                    <Icon spin name="volume-off" />
+                <button onClick={this.handleTogglePlay} className="btn btn-lg btn-link">
+                    <Icon name={this.state.playing ? "pause-circle-o": "play-circle-o"} size="2x" />
                 </button>
             </div>
         )

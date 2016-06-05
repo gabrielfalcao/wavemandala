@@ -3,7 +3,6 @@ import React from 'react'
 
 class HeaderView extends React.Component {
     render() {
-        var jid = window.wavemandala.jid;
         var self = this;
         return (
             <div>

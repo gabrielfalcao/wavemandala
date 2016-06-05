@@ -8,8 +8,8 @@
     prosody_tls_key_path: /etc/prosody/certs/wavemanda.la.key
     prosody_tls_cert_path: /etc/prosody/certs/wavemanda.la.cert
     restund_public_ip_address: 159.203.78.204
-    wavemandala_mysql_user: xmpp
-    wavemandala_mysql_db: prosody
+    wavemandala_mysql_user: admin
+    wavemandala_mysql_db: wavemandala
     root_domain: wavemanda.la
     local_repository_root_path: "{{ playbook_dir }}/.."
 
