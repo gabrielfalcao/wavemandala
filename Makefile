@@ -3,7 +3,8 @@ all: deploy-everything
 prepare-environment: deps
 
 python-deps:
-	pip install -r requirements.txt
+	pip install -r development.txt
+
 js-deps:
 	cd wavemandala/static && npm install
 
@@ -29,3 +30,11 @@ run:
 
 edit-vault:
 	ansible-vault --vault-password-file=~/.ansible-vault.wavemandala edit provisioning/wavemandala-vault.yml
+
+unit:
+	@nosetests --nologcapture -s --with-coverage --cover-erase --cover-package=wavemandala --rednose --verbosity=3 tests/unit
+
+functional:
+	@nosetests --nologcapture -s --with-coverage --cover-erase --cover-package=wavemandala --rednose --verbosity=3 tests/functional
+
+tests: unit functional

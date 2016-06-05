@@ -16,3 +16,4 @@ plant==0.1.2
 flask-session==0.2.3
 coloredlogs==5.0
 Flask-Login==0.2.11
+repocket==0.1.26

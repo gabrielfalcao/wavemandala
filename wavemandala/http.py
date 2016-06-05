@@ -27,18 +27,13 @@ class Application(Flask):
         )
         self.redis = get_redis_connection()
         self.config.update(
-            MAIL_PATH_TEMPLATE='/var/mail/{0}',
+            AUDIO_PATH=os.environ.get('AUDIO_PATH') or '/srv/uploads/audio',
             SECRET_KEY=os.environ.get('SECRET_KEY') or 'local',
             SESSION_TYPE='redis',
             SESSION_COOKIE_SECURE=True,
             PERMANENT_SESSION_LIFETIME=timedelta(hours=6),
             SESSION_KEY_PREFIX='wavemandala:session:',
             SESSION_REDIS=self.redis,
-            GOOGLE_LOGIN_CLIENT_SCOPES='https://www.googleapis.com/auth/userinfo.email',
-            GOOGLE_LOGIN_REDIRECT_URI=os.environ.get('GOOGLE_LOGIN_REDIRECT_URI'),
-            GOOGLE_LOGIN_CLIENT_ID=os.environ.get('GOOGLE_LOGIN_CLIENT_ID'),
-            GOOGLE_LOGIN_CLIENT_SECRET=os.environ.get('GOOGLE_LOGIN_CLIENT_SECRET'),
-            REGISTER_USER_CMD_TEMPLATE='prosodyctl register {jid} wavemanda.la {password}',
         )
         self.app_node = app_node
         self.sesh = Session(self)

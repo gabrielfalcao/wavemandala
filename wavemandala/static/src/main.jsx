@@ -16,10 +16,6 @@ $(function(){
     render((
         <Router history={history}>
             <Route path="/" component={IndexView} />
-            <Route path="/chat" component={MainChatView} />
-            <Route path="/manage-users" component={UserManagementView} />
-            <Route path="/webmail" component={WebmailView} />
-            <Route path="/webmail/msg/:id" component={MailMessageView} />
         </Router>
     ), document.getElementById('app-container'))
 })
