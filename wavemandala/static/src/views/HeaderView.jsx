@@ -1,5 +1,4 @@
 import React from 'react'
-import { Navbar, Nav, NavDropdown, NavItem, MenuItem, Col } from 'react-bootstrap';
 
 
 class HeaderView extends React.Component {
@@ -7,21 +6,20 @@ class HeaderView extends React.Component {
         var jid = window.wavemandala.jid;
         var self = this;
         return (
-            <Navbar>
-                <Navbar.Header>
-                    <Navbar.Brand>
-                        <a href="/">Wave Mandala</a>
-                    </Navbar.Brand>
-                    <Navbar.Toggle />
-                </Navbar.Header>
-                <Navbar.Collapse>
-                    <Nav>
-                        <NavItem href="/#/chat">Chat</NavItem>
-                        <NavItem href="/#/webmail">Webmail</NavItem>
-                        <NavItem href="/#/manage-users">Manage Users</NavItem>
-                    </Nav>
-                </Navbar.Collapse>
-            </Navbar>
+            <div>
+                <header className="navbar">
+                    <section className="navbar-section">
+                        <a href="#" className="btn btn-link btn-lg">
+                            <i className="icon icon-people"></i>
+                        </a>
+                        <a href="#" className="navbar-brand">Wave Mandala</a>
+                    </section>
+                    <section className="navbar-section">
+                        <a href="#" className="btn btn-link">Music</a>
+                        <a href="#" className="btn btn-link">About</a>
+                    </section>
+                </header>
+            </div>
         )
     }
 }

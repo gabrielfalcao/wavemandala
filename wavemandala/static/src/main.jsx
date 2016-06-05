@@ -8,10 +8,6 @@ import { Router, Route, Redirect, IndexRoute } from 'react-router'
 
 import HeaderView from './views/HeaderView.jsx'
 import IndexView from './views/IndexView.jsx'
-import WebmailView from './views/WebmailView.jsx'
-import UserManagementView from './views/UserManagementView.jsx'
-import MailMessageView from './views/MailMessageView.jsx'
-import MainChatView from './views/MainChatView.jsx'
 import history from './core.jsx'
 
 import $ from 'jquery'

@@ -11,6 +11,10 @@
   file: path=/etc/nginx/sites-enabled/default state=absent
   tags: nginx
 
+- name: ensuring that the upload dir is there
+  file: path=/srv/uploads/audio state=directory
+  tags: nginx
+
 - name: install nginx site config file
   template: src=app.conf dest=/etc/nginx/sites-available/wavemandala.conf
             owner=root group=root mode=644
