@@ -1,4 +1,10 @@
-all: deploy-everything
+WAVEMANDALA_SETTINGS := settings.py
+AUDIO_PATH := $(shell pwd)/audio
+
+export WAVEMANDALA_SETTINGS
+export AUDIO_PATH
+
+all: tests deploy-everything
 
 prepare-environment: deps
 

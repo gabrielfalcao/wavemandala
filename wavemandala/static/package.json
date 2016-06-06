@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/cnry/wavemandala#readme",
   "dependencies": {
+    "browser-request": "^0.3.3",
     "es6-promise": "^3.1.2",
     "history": "^1.15.0",
     "html-loader": "^0.4.0",
@@ -43,6 +44,7 @@
     "react-dom": "^0.14.0",
     "react-fa": "^4.1.2",
     "react-mixin": "^3.0.3",
+    "react-redux": "^4.4.5",
     "react-router": "^1.0.1",
     "react-router-bootstrap": "git://github.com/gabrielfalcao/react-router-bootstrap.git#25ea86bb2415026986e345f4b378d7c7ea2ff965",
     "react-wavesurfer": "^0.4.4",

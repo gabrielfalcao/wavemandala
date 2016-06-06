@@ -5,3 +5,5 @@
 *#*
 .*#*
 audio/*
+tests/functional/audio/track1.track tests/functional/audio/track1.wav tests/functional/audio/track2.track tests/functional/audio/track2.wav tests/functional/audio/track3.track tests/functional/audio/track3.wav tests/functional/audio/track4.track tests/functional/audio/track4.wav
+tests/functional/audio
